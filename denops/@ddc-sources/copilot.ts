@@ -23,23 +23,27 @@ type UserData = {
 export class Source extends BaseSource<Params, UserData> {
   // deno-lint-ignore require-await
   override async getCompletePosition(
-    args: GetCompletePositionArguments<Params>
+    args: GetCompletePositionArguments<Params>,
   ): Promise<number> {
     return args.context.input.length;
   }
 
   override async gather(
-    args: GatherArguments<Params>
+    args: GatherArguments<Params>,
   ): Promise<DdcGatherItems<UserData>> {
-    await args.denops.call("luaeval", "require'ddc_copilot'.fetch_completions()")
+    await args.denops.call(
+      "luaeval",
+      "require'ddc_copilot'.fetch_completions()",
+    );
     return [];
   }
 
   override async onCompleteDone(
-    args: OnCompleteDoneArguments<Params, UserData>
+    args: OnCompleteDoneArguments<Params, UserData>,
   ): Promise<void> {
-    const oldText = (await args.denops.call("getline", args.userData.pos.line)) as string;
-    const text = args.userData.text.split('\n');
+    const oldText =
+      (await args.denops.call("getline", args.userData.pos.line)) as string;
+    const text = args.userData.text.split("\n");
     const newText = oldText.slice(0, args.userData.pos.character) + text[0];
 
     // modify first line
