@@ -44,6 +44,8 @@ export class Source extends BaseSource<Params, UserData> {
     const oldText =
       (await args.denops.call("getline", args.userData.pos.line)) as string;
     const text = args.userData.text.split("\n");
+    if (text[text.length - 1] === "") text.pop();
+
     const newText = oldText.slice(0, args.userData.pos.character) + text[0];
 
     // modify first line
